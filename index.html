@@ -2,25 +2,42 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>道具リスト</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>道具管理システム</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        form { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 10px; }
+        button { padding: 8px 16px; background-color: #007BFF; color: #fff; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-    <h1>道具リスト</h1>
-    <input type="text" id="search-box" placeholder="道具名で検索">
+    <h1>道具管理システム</h1>
+
+    <!-- フォーム: 新しい道具を追加 -->
+    <h2>新しい道具を追加</h2>
+    <form id="add-tool-form">
+        <label>
+            カテゴリ:
+            <input type="text" id="category" required>
+        </label>
+        <label>
+            道具名:
+            <input type="text" id="name" required>
+        </label>
+        <label>
+            在庫数:
+            <input type="number" id="stock" required>
+        </label>
+        <button type="submit">追加</button>
+    </form>
+
+    <!-- テーブル: 道具リスト -->
+    <h2>道具リスト</h2>
     <table id="tool-table">
         <thead>
             <tr>
@@ -30,28 +47,60 @@
             </tr>
         </thead>
         <tbody>
-            <!-- データが挿入されます -->
+            <!-- データが動的に挿入されます -->
         </tbody>
     </table>
+
+    <!-- スクリプト -->
     <script>
-        // JSONPのコールバック関数
-        function handleData(tools) {
-            const tableBody = document.querySelector("#tool-table tbody");
-            tools.forEach(tool => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${tool.category}</td>
-                    <td>${tool.name}</td>
-                    <td>${tool.stock}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbzoo4Myq0Zg7DQKxFG5D2Q-qZqaosJGKtTPSkJOH6HfJQ_2IeJh7Ee5Yr-YqC5WlAB5/exec";
+
+        // フォーム送信時に新しい道具を追加
+        document.getElementById("add-tool-form").addEventListener("submit", function(e) {
+            e.preventDefault(); // フォームのデフォルト動作を防止
+
+            // 入力データを取得
+            const category = document.getElementById("category").value;
+            const name = document.getElementById("name").value;
+            const stock = document.getElementById("stock").value;
+
+            // Google Apps ScriptのURLにデータを送信
+            fetch(scriptUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ category, name, stock })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert("新しい道具が追加されました！");
+                    // フォームをリセット
+                    document.getElementById("add-tool-form").reset();
+                    // 最新データを再取得してテーブルを更新
+                    loadData();
+                }
+            })
+            .catch(error => console.error("データ送信中にエラーが発生しました:", error));
+        });
+
+        // データを取得してテーブルを更新
+        function loadData() {
+            fetch(scriptUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#tool-table tbody");
+                    tableBody.innerHTML = ""; // テーブルをクリア
+                    data.forEach(tool => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `<td>${tool.category}</td><td>${tool.name}</td><td>${tool.stock}</td>`;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("データの読み込み中にエラーが発生しました:", error));
         }
 
-        // Google Apps ScriptのデプロイURLをJSONPで呼び出す
-        const script = document.createElement("script");
-        script.src = "https://script.google.com/macros/s/AKfycbx97QSceN9U2uzrmj6IlGHgSivR-H8F527wwp0S6t2kH2j5HIralmbQ0csYppOO9igK/exec/exec?callback=handleData";
-        document.body.appendChild(script);
+        // ページ読み込み時にデータをロード
+        loadData();
     </script>
 </body>
 </html>
