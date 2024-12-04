@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>道具管理システム</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>道具リスト</h1>
+    <input type="text" id="search-box" placeholder="道具名で検索" style="margin-bottom: 10px; width: 100%; padding: 8px; font-size: 16px;">
     <table id="tool-table">
         <thead>
             <tr>
@@ -25,7 +21,7 @@
         </tbody>
     </table>
     <script>
-        fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxfQ44_O-ZZ2edhwXLx-JgkTzvsa0X4A_arkVNs-1xroQbENkV0Ei2lvg6ryL0lgEj5/exec/exec")
+        fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec")
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector("#tool-table tbody");
@@ -36,6 +32,16 @@
                 });
             })
             .catch(error => console.error("データの読み込み中にエラーが発生しました:", error));
+
+        document.getElementById('search-box').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#tool-table tbody tr');
+            rows.forEach(row => {
+                const toolName = row.cells[1].textContent.toLowerCase(); // 道具名列を検索
+                row.style.display = toolName.includes(searchTerm) ? '' : 'none';
+            });
+        });
     </script>
 </body>
 </html>
+
