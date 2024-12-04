@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>道具管理システム</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>道具リスト</h1>
+    <table id="tool-table">
+        <thead>
+            <tr>
+                <th>カテゴリ</th>
+                <th>道具名</th>
+                <th>在庫数</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- データが動的に挿入されます -->
+        </tbody>
+    </table>
+    <script>
+        fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxfQ44_O-ZZ2edhwXLx-JgkTzvsa0X4A_arkVNs-1xroQbENkV0Ei2lvg6ryL0lgEj5/exec/exec")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector("#tool-table tbody");
+                data.forEach(tool => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td>${tool.category}</td><td>${tool.name}</td><td>${tool.stock}</td>`;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("データの読み込み中にエラーが発生しました:", error));
+    </script>
+</body>
+</html>
