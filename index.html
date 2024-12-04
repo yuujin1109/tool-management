@@ -2,40 +2,25 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>道具管理システム</title>
+    <title>道具リスト</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-            color: #333;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            background-color: white;
         }
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
         }
         th {
-            background-color: #007BFF;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f4f4f4;
         }
     </style>
 </head>
 <body>
     <h1>道具リスト</h1>
-    <input type="text" id="search-box" placeholder="道具名で検索" style="margin-bottom: 10px; padding: 8px; font-size: 16px;">
+    <input type="text" id="search-box" placeholder="道具名で検索">
     <table id="tool-table">
         <thead>
             <tr>
@@ -45,37 +30,28 @@
             </tr>
         </thead>
         <tbody>
-            <!-- データが動的に挿入されます -->
+            <!-- データが挿入されます -->
         </tbody>
     </table>
     <script>
-        // データを取得してテーブルに挿入
-        fetch("https://script.google.com/macros/s/AKfycbxf_Js6mFC_q72AHrl9jJ8tru73I1BiPNC_xJObx06V78b7m5lxaeLuccWZnUZzg_nM/exec)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#tool-table tbody");
-                data.forEach(tool => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `<td>${tool.category}</td><td>${tool.name}</td><td>${tool.stock}</td>`;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error("データの読み込み中にエラーが発生しました:", error));
-
-        // 検索機能
-        document.getElementById('search-box').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#tool-table tbody tr');
-            rows.forEach(row => {
-                const toolName = row.cells[1].textContent.toLowerCase();
-                row.style.display = toolName.includes(searchTerm) ? '' : 'none';
+        // JSONPのコールバック関数
+        function handleData(tools) {
+            const tableBody = document.querySelector("#tool-table tbody");
+            tools.forEach(tool => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${tool.category}</td>
+                    <td>${tool.name}</td>
+                    <td>${tool.stock}</td>
+                `;
+                tableBody.appendChild(row);
             });
-        });
+        }
+
+        // Google Apps ScriptのデプロイURLをJSONPで呼び出す
+        const script = document.createElement("script");
+        script.src = "https://script.google.com/macros/s/AKfycbx97QSceN9U2uzrmj6IlGHgSivR-H8F527wwp0S6t2kH2j5HIralmbQ0csYppOO9igK/exec/exec?callback=handleData";
+        document.body.appendChild(script);
     </script>
 </body>
 </html>
