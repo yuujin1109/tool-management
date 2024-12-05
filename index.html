@@ -1,121 +1,17 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>道具管理システム</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        form { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 10px; }
-        button { padding: 8px 16px; background-color: #007BFF; color: #fff; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #search-container { margin-bottom: 20px; }
-        #search-box { padding: 8px; width: 300px; }
-    </style>
-</head>
-<body>
-    <h1>道具管理システム</h1>
+const scriptUrl = "https://script.google.com/macros/s/AKfycbw5RUmkUv19zy6lGZrX2EpRY0Gmd533IVbxTGOfj2MdEF4mUC3wdNuhx5esD7PvYFXK/exec";
 
-    <!-- 検索機能 -->
-    <div id="search-container">
-        <input type="text" id="search-box" placeholder="道具名で検索" autocomplete="off">
-        <button id="search-button">検索</button>
-    </div>
+// GETリクエストの例
+fetch(scriptUrl)
+    .then(response => response.json())
+    .then(data => console.log("GET Response:", data))
+    .catch(error => console.error("GET Error:", error));
 
-    <!-- フォーム: 新しい道具を追加 -->
-    <h2>新しい道具を追加</h2>
-    <form id="add-tool-form" autocomplete="off">
-        <label>
-            カテゴリ:
-            <input type="text" id="category" autocomplete="off" required>
-        </label>
-        <label>
-            道具名:
-            <input type="text" id="name" autocomplete="off" required>
-        </label>
-        <label>
-            在庫数:
-            <input type="number" id="stock" autocomplete="off" required>
-        </label>
-        <button type="submit">追加</button>
-    </form>
-
-    <!-- テーブル: 道具リスト -->
-    <h2>道具リスト</h2>
-    <table id="tool-table">
-        <thead>
-            <tr>
-                <th>カテゴリ</th>
-                <th>道具名</th>
-                <th>在庫数</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- データが動的に挿入されます -->
-        </tbody>
-    </table>
-
-    <!-- スクリプト -->
-    <script>
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbxsxo2RVn_uIN5JJDvlxvv6WwXwb9WwYhv1jxtDlg5Byfqud-mOl4zuFa4n2gBJkPzt/exec";
-
-        // 検索機能
-        document.getElementById("search-button").addEventListener("click", function () {
-            const searchTerm = document.getElementById("search-box").value.toLowerCase();
-            const rows = document.querySelectorAll("#tool-table tbody tr");
-
-            rows.forEach(row => {
-                const toolName = row.cells[1].textContent.toLowerCase();
-                row.style.display = toolName.includes(searchTerm) ? "" : "none";
-            });
-        });
-
-        // フォーム送信時に新しい道具を追加
-        document.getElementById("add-tool-form").addEventListener("submit", function(e) {
-            e.preventDefault();
-
-            const category = document.getElementById("category").value;
-            const name = document.getElementById("name").value;
-            const stock = document.getElementById("stock").value;
-
-            fetch(scriptUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ category, name, stock })
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    alert("新しい道具が追加されました！");
-                    document.getElementById("add-tool-form").reset();
-                    loadData();
-                }
-            })
-            .catch(error => console.error("データ送信中にエラーが発生しました:", error));
-        });
-
-        // データを取得してテーブルを更新
-        function loadData() {
-            fetch(scriptUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector("#tool-table tbody");
-                    tableBody.innerHTML = "";
-                    data.forEach(tool => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `<td>${tool.category}</td><td>${tool.name}</td><td>${tool.stock}</td>`;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error("データの読み込み中にエラーが発生しました:", error));
-        }
-
-        // ページ読み込み時にデータをロード
-        loadData();
-    </script>
-</body>
-</html>
+// POSTリクエストの例
+fetch(scriptUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "test", value: 123 })
+})
+    .then(response => response.json())
+    .then(data => console.log("POST Response:", data))
+    .catch(error => console.error("POST Error:", error));
