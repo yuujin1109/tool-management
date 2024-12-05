@@ -1,17 +1,30 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbw5RUmkUv19zy6lGZrX2EpRY0Gmd533IVbxTGOfj2MdEF4mUC3wdNuhx5esD7PvYFXK/exec";
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Apps Script APIテスト</title>
+</head>
+<body>
+    <h1>Google Apps Script APIテスト</h1>
+    <script>
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbw5RUmkUv19zy6lGZrX2EpRY0Gmd533IVbxTGOfj2MdEF4mUC3wdNuhx5esD7PvYFXK/exec";
 
-// GETリクエストの例
-fetch(scriptUrl)
-    .then(response => response.json())
-    .then(data => console.log("GET Response:", data))
-    .catch(error => console.error("GET Error:", error));
+        // GETリクエストの例
+        fetch(scriptUrl)
+            .then(response => response.json())
+            .then(data => console.log("GET Response:", data))
+            .catch(error => console.error("GET Error:", error));
 
-// POSTリクエストの例
-fetch(scriptUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: "test", value: 123 })
-})
-    .then(response => response.json())
-    .then(data => console.log("POST Response:", data))
-    .catch(error => console.error("POST Error:", error));
+        // POSTリクエストの例
+        fetch(scriptUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: "test", value: 123 })
+        })
+            .then(response => response.json())
+            .then(data => console.log("POST Response:", data))
+            .catch(error => console.error("POST Error:", error));
+    </script>
+</body>
+</html>
