@@ -22,24 +22,24 @@
 
     <!-- 検索機能 -->
     <div id="search-container">
-        <input type="text" id="search-box" placeholder="道具名で検索">
+        <input type="text" id="search-box" placeholder="道具名で検索" autocomplete="off">
         <button id="search-button">検索</button>
     </div>
 
     <!-- フォーム: 新しい道具を追加 -->
     <h2>新しい道具を追加</h2>
-    <form id="add-tool-form">
+    <form id="add-tool-form" autocomplete="off">
         <label>
             カテゴリ:
-            <input type="text" id="category" required>
+            <input type="text" id="category" autocomplete="off" required>
         </label>
         <label>
             道具名:
-            <input type="text" id="name" required>
+            <input type="text" id="name" autocomplete="off" required>
         </label>
         <label>
             在庫数:
-            <input type="number" id="stock" required>
+            <input type="number" id="stock" autocomplete="off" required>
         </label>
         <button type="submit">追加</button>
     </form>
@@ -61,7 +61,7 @@
 
     <!-- スクリプト -->
     <script>
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbwj_oIL-AYQtSC4K40o7h0f8GVIqser-_9lUulKYbTAJ_rn41CxiRkLPjQCbotAlJIO/exec";
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbydBe_Rswrgd0fY6B0k2OOdIwb9jgJ7ZjqwAWYlOxMe95Ja2sOAE7dPS-rQKoH9fOwe/exec";
 
         // 検索機能
         document.getElementById("search-button").addEventListener("click", function () {
@@ -70,24 +70,18 @@
 
             rows.forEach(row => {
                 const toolName = row.cells[1].textContent.toLowerCase();
-                if (toolName.includes(searchTerm)) {
-                    row.style.display = ""; // 表示
-                } else {
-                    row.style.display = "none"; // 非表示
-                }
+                row.style.display = toolName.includes(searchTerm) ? "" : "none";
             });
         });
 
         // フォーム送信時に新しい道具を追加
         document.getElementById("add-tool-form").addEventListener("submit", function(e) {
-            e.preventDefault(); // フォームのデフォルト動作を防止
+            e.preventDefault();
 
-            // 入力データを取得
             const category = document.getElementById("category").value;
             const name = document.getElementById("name").value;
             const stock = document.getElementById("stock").value;
 
-            // Google Apps ScriptのURLにデータを送信
             fetch(scriptUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -97,9 +91,7 @@
             .then(result => {
                 if (result.success) {
                     alert("新しい道具が追加されました！");
-                    // フォームをリセット
                     document.getElementById("add-tool-form").reset();
-                    // 最新データを再取得してテーブルを更新
                     loadData();
                 }
             })
@@ -112,7 +104,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector("#tool-table tbody");
-                    tableBody.innerHTML = ""; // テーブルをクリア
+                    tableBody.innerHTML = "";
                     data.forEach(tool => {
                         const row = document.createElement("tr");
                         row.innerHTML = `<td>${tool.category}</td><td>${tool.name}</td><td>${tool.stock}</td>`;
